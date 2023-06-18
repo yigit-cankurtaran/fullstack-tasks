@@ -48,6 +48,19 @@ export default function App() {
     });
   };
 
+  const handleEditTask = (task: Task) => {
+    // prompt user for new task name
+    const name = prompt("Enter new task name:");
+    if (!name) return alert("Task name cannot be empty!");
+
+    // update task name on server
+    fetch(`http://localhost:1239/tasks/${task.id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ...task, name }),
+    });
+  };
+
   return (
     <div>
       {/* create an input field for task name */}
@@ -66,6 +79,7 @@ export default function App() {
             />
             {task.id} - {task.name}
             <button onClick={() => handleDeleteTask(task)}>Delete</button>
+            <button onClick={() => handleEditTask(task)}>Edit</button>
           </li>
         ))}
       </ul>
