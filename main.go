@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -27,6 +28,11 @@ var tasks = []task{
 // main function
 func main() {
 	router := gin.Default()
+	// CORS
+	config := cors.DefaultConfig()
+	config.AllowOrigins = []string{"http://localhost:5173"}
+	router.Use(cors.New(config))
+
 	router.GET("/tasks", getTasks)
 	router.GET("/", func(c *gin.Context) {
 		c.String(http.StatusOK, "Hello World")
