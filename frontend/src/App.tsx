@@ -62,7 +62,7 @@ export default function App() {
   };
 
   return (
-    <div>
+    <div className="bg-slate-300">
       {/* create an input field for task name */}
       <input type="text" />
       {/* create a button to add task */}
