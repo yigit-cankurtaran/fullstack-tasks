@@ -67,7 +67,10 @@ export default function App() {
       <div className="flex-col justify-center items-center text-center">
         <input type="text" className="text-black" />
         {/* create a button to add task */}
-        <button onClick={handleAddTask} className="ml-4 bg-white text-black">
+        <button
+          onClick={handleAddTask}
+          className="ml-4 bg-white text-black hover:bg-green-500 hover:text-white"
+        >
           Add Task
         </button>
         <h1 className="text-4xl mb-8">Tasks</h1>
@@ -79,16 +82,19 @@ export default function App() {
                 type="checkbox"
                 checked={task.completion}
                 onChange={() => handleCheckboxChange(task)}
+                className="mr-4"
               />
-              {task.id} - {task.name}
+              <span className={task.completion ? "line-through" : ""}>
+                {task.id} - {task.name}
+              </span>
               <button
-                className="bg-white text-black ml-4 mr-4 rounded-sm p-0.5"
+                className="bg-white text-black ml-4 mr-4 rounded-sm p-0.5 hover:bg-red-500 hover:text-white"
                 onClick={() => handleDeleteTask(task)}
               >
                 Delete
               </button>
               <button
-                className="bg-white text-black ml-4 mr-4 rounded-sm p-0.5"
+                className="bg-white text-black ml-4 mr-4 rounded-sm p-0.5 hover:bg-yellow-500 hover:text-white"
                 onClick={() => handleEditTask(task)}
               >
                 Edit
