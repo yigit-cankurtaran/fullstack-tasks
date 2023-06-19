@@ -68,12 +68,12 @@ export default function App() {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ...task, name }),
+    }).then(() => {
+      // refetch tasks from server
+      fetch("http://localhost:1239/tasks")
+        .then((response) => response.json())
+        .then((data) => setTasks(data));
     });
-
-    // refetch tasks from server
-    fetch("http://localhost:1239/tasks")
-      .then((response) => response.json())
-      .then((data) => setTasks(data));
   };
 
   return (
