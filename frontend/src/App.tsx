@@ -33,12 +33,16 @@ export default function App() {
     const name = (document.querySelector("input") as HTMLInputElement).value;
     if (!name) return alert("Task name cannot be empty!");
 
+    let maxID = tasks.reduce((max, task) => Math.max(max, task.id), 0);
+
     // add task to server
     fetch("http://localhost:1239/tasks", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: tasks.length + 1, name, completion: false }),
+      body: JSON.stringify({ id: maxID + 1, name, completion: false }),
     });
+
+    maxID += 1;
 
     // refetch tasks from server
     fetch("http://localhost:1239/tasks")

@@ -2,8 +2,10 @@ package main
 
 // import http and gin
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
+	"os"
 	"strconv"
 
 	"github.com/gin-contrib/cors"
@@ -27,6 +29,12 @@ var tasks = []task{
 
 // main function
 func main() {
+	// if tasks.json exists, read from it
+	tasksJSON, err := os.ReadFile("tasks.json")
+	if err == nil {
+		json.Unmarshal(tasksJSON, &tasks)
+	}
+
 	router := gin.Default()
 	// CORS
 	config := cors.DefaultConfig()
@@ -60,6 +68,13 @@ func postTasks(c *gin.Context) {
 
 	// add the new task to the slice
 	tasks = append(tasks, newTask)
+
+	// save to file
+	tasksJSON, err := json.Marshal(tasks)
+	if err != nil {
+		fmt.Println(err)
+	}
+	os.WriteFile("tasks.json", tasksJSON, os.ModePerm)
 	c.IndentedJSON(http.StatusCreated, newTask)
 }
 
@@ -113,6 +128,13 @@ func putTaskByID(c *gin.Context) {
 			return
 		}
 	}
+
+	// save to file
+	tasksJSON, err := json.Marshal(tasks)
+	if err != nil {
+		fmt.Println(err)
+	}
+	os.WriteFile("tasks.json", tasksJSON, os.ModePerm)
 	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "task not found"})
 }
 
@@ -134,5 +156,12 @@ func deleteTaskByID(c *gin.Context) {
 			return
 		}
 	}
+
+	// save to file
+	tasksJSON, err := json.Marshal(tasks)
+	if err != nil {
+		fmt.Println(err)
+	}
+	os.WriteFile("tasks.json", tasksJSON, os.ModePerm)
 	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "task not found"})
 }
