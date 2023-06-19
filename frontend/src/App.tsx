@@ -39,6 +39,11 @@ export default function App() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id: tasks.length + 1, name, completion: false }),
     });
+
+    // refetch tasks from server
+    fetch("http://localhost:1239/tasks")
+      .then((response) => response.json())
+      .then((data) => setTasks(data));
   };
 
   const handleDeleteTask = (task: Task) => {
@@ -46,6 +51,11 @@ export default function App() {
     fetch(`http://localhost:1239/tasks/${task.id}`, {
       method: "DELETE",
     });
+
+    // refetch tasks from server
+    fetch("http://localhost:1239/tasks")
+      .then((response) => response.json())
+      .then((data) => setTasks(data));
   };
 
   const handleEditTask = (task: Task) => {
@@ -59,6 +69,11 @@ export default function App() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ...task, name }),
     });
+
+    // refetch tasks from server
+    fetch("http://localhost:1239/tasks")
+      .then((response) => response.json())
+      .then((data) => setTasks(data));
   };
 
   return (
