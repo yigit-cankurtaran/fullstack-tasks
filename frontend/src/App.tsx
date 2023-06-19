@@ -62,27 +62,41 @@ export default function App() {
   };
 
   return (
-    <div className="bg-slate-300">
+    <div className="w-screen h-screen bg-black text-white">
       {/* create an input field for task name */}
-      <input type="text" />
-      {/* create a button to add task */}
-      <button onClick={handleAddTask}>Add Task</button>
-      <h1>Tasks</h1>
-      <ul>
-        {tasks.map((task) => (
-          // <li key={task.id}>{task.name}</li>
-          <li key={task.id}>
-            <input
-              type="checkbox"
-              checked={task.completion}
-              onChange={() => handleCheckboxChange(task)}
-            />
-            {task.id} - {task.name}
-            <button onClick={() => handleDeleteTask(task)}>Delete</button>
-            <button onClick={() => handleEditTask(task)}>Edit</button>
-          </li>
-        ))}
-      </ul>
+      <div className="flex-col justify-center items-center text-center">
+        <input type="text" className="text-black" />
+        {/* create a button to add task */}
+        <button onClick={handleAddTask} className="ml-4 bg-white text-black">
+          Add Task
+        </button>
+        <h1 className="text-4xl mb-8">Tasks</h1>
+        <ul>
+          {tasks.map((task) => (
+            // <li key={task.id}>{task.name}</li>
+            <li key={task.id} className="mb-4 text-xl">
+              <input
+                type="checkbox"
+                checked={task.completion}
+                onChange={() => handleCheckboxChange(task)}
+              />
+              {task.id} - {task.name}
+              <button
+                className="bg-white text-black ml-4 mr-4 rounded-sm p-0.5"
+                onClick={() => handleDeleteTask(task)}
+              >
+                Delete
+              </button>
+              <button
+                className="bg-white text-black ml-4 mr-4 rounded-sm p-0.5"
+                onClick={() => handleEditTask(task)}
+              >
+                Edit
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 }
