@@ -50,12 +50,12 @@ export default function App() {
     // delete task from server
     fetch(`http://localhost:1239/tasks/${task.id}`, {
       method: "DELETE",
+    }).then(() => {
+      // refetch tasks from server
+      fetch("http://localhost:1239/tasks")
+        .then((response) => response.json())
+        .then((data) => setTasks(data));
     });
-
-    // refetch tasks from server
-    fetch("http://localhost:1239/tasks")
-      .then((response) => response.json())
-      .then((data) => setTasks(data));
   };
 
   const handleEditTask = (task: Task) => {
@@ -83,7 +83,11 @@ export default function App() {
         <input type="text" className="text-black" />
         {/* create a button to add task */}
         <button
-          onClick={handleAddTask}
+          // call handleAddTask and clear input field when button is clicked
+          onClick={() => {
+            handleAddTask();
+            (document.querySelector("input") as HTMLInputElement).value = "";
+          }}
           className="ml-4 bg-white text-black hover:bg-green-500 hover:text-white"
         >
           Add Task
