@@ -124,17 +124,19 @@ func putTaskByID(c *gin.Context) {
 	for i, a := range tasks {
 		if a.ID == idInt {
 			tasks[i] = newTask // <-- update task data
+
+			// save to file
+			tasksJSON, err := json.Marshal(tasks)
+			if err != nil {
+				fmt.Println(err)
+			}
+			os.WriteFile("tasks.json", tasksJSON, os.ModePerm)
+
 			c.IndentedJSON(http.StatusOK, newTask)
 			return
 		}
 	}
 
-	// save to file
-	tasksJSON, err := json.Marshal(tasks)
-	if err != nil {
-		fmt.Println(err)
-	}
-	os.WriteFile("tasks.json", tasksJSON, os.ModePerm)
 	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "task not found"})
 }
 
