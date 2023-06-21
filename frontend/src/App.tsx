@@ -8,6 +8,7 @@ interface Task {
 
 export default function App() {
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [darkMode, setDarkMode] = useState<boolean>(false);
 
   useEffect(() => {
     fetch("http://localhost:1239/tasks")
@@ -77,25 +78,41 @@ export default function App() {
   };
 
   return (
-    <div className="w-screen h-screen bg-gray-100 text-gray-800">
+    <div
+      className={`w-screen h-screen ${
+        darkMode ? "bg-gray-900 text-gray-100" : "bg-gray-100 text-gray-800"
+      }`}
+    >
       <div className="max-w-2xl mx-auto py-10">
         <h1 className="text-4xl font-bold mb-8">Tasks</h1>
         <div className="flex mb-4">
           <input
             type="text"
-            className="flex-grow rounded border border-gray-300 p-2 mr-2"
+            className={`flex-grow rounded border ${
+              darkMode ? "border-gray-600" : "border-gray-300"
+            } p-2 mr-2 ${
+              darkMode ? "bg-gray-800 text-gray-100" : "bg-white text-gray-800"
+            }`}
           />
           <button
             onClick={() => {
               handleAddTask();
               (document.querySelector("input") as HTMLInputElement).value = "";
             }}
-            className="bg-blue-500 text-white rounded px-4 py-2 hover:bg-blue-600"
+            className={`${
+              darkMode ? "bg-blue-400" : "bg-blue-500"
+            } text-white rounded px-4 py-2 hover:${
+              darkMode ? "bg-blue-500" : "bg-blue-600"
+            }`}
           >
             Add Task
           </button>
         </div>
-        <ul className="divide-y divide-gray-300">
+        <ul
+          className={`divide-y ${
+            darkMode ? "divide-gray-700" : "divide-gray-300"
+          }`}
+        >
           {tasks.map((task) => (
             <li key={task.id} className="py-4 flex items-center">
               <input
@@ -112,13 +129,21 @@ export default function App() {
                 {task.name}
               </span>
               <button
-                className="bg-white text-gray-800 ml-2 rounded p-2 hover:bg-red-500 hover:text-white"
+                className={`${
+                  darkMode
+                    ? "bg-gray-800 text-gray-100"
+                    : "bg-white text-gray-800"
+                } ml-2 rounded p-2 hover:bg-red-500 hover:text-white`}
                 onClick={() => handleDeleteTask(task)}
               >
                 Delete
               </button>
               <button
-                className="bg-white text-gray-800 ml-2 rounded p-2 hover:bg-yellow-500 hover:text-white"
+                className={`${
+                  darkMode
+                    ? "bg-gray-800 text-gray-100"
+                    : "bg-white text-gray-800"
+                } ml-2 rounded p-2 hover:bg-yellow-500 hover:text-white`}
                 onClick={() => handleEditTask(task)}
               >
                 Edit
@@ -127,6 +152,16 @@ export default function App() {
           ))}
         </ul>
       </div>
+      <button
+        className={`fixed bottom-4 left-4 ${
+          darkMode ? "bg-gray-800 text-gray-100" : "bg-white text-gray-800"
+        } rounded-full p-4 shadow-lg hover:${
+          darkMode ? "bg-gray-700" : "bg-gray-100"
+        }`}
+        onClick={() => setDarkMode(!darkMode)}
+      >
+        {darkMode ? "Light" : "Dark"}
+      </button>
     </div>
   );
 }
