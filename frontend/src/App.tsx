@@ -77,43 +77,48 @@ export default function App() {
   };
 
   return (
-    <div className="w-screen h-screen bg-black text-white">
-      {/* create an input field for task name */}
-      <div className="flex-col justify-center items-center text-center">
-        <input type="text" className="text-black" />
-        {/* create a button to add task */}
-        <button
-          // call handleAddTask and clear input field when button is clicked
-          onClick={() => {
-            handleAddTask();
-            (document.querySelector("input") as HTMLInputElement).value = "";
-          }}
-          className="ml-4 bg-white text-black hover:bg-green-500 hover:text-white"
-        >
-          Add Task
-        </button>
-        <h1 className="text-4xl mb-8">Tasks</h1>
-        <ul>
+    <div className="w-screen h-screen bg-gray-100 text-gray-800">
+      <div className="max-w-2xl mx-auto py-10">
+        <h1 className="text-4xl font-bold mb-8">Tasks</h1>
+        <div className="flex mb-4">
+          <input
+            type="text"
+            className="flex-grow rounded border border-gray-300 p-2 mr-2"
+          />
+          <button
+            onClick={() => {
+              handleAddTask();
+              (document.querySelector("input") as HTMLInputElement).value = "";
+            }}
+            className="bg-blue-500 text-white rounded px-4 py-2 hover:bg-blue-600"
+          >
+            Add Task
+          </button>
+        </div>
+        <ul className="divide-y divide-gray-300">
           {tasks.map((task) => (
-            // <li key={task.id}>{task.name}</li>
-            <li key={task.id} className="mb-4 text-xl">
+            <li key={task.id} className="py-4 flex items-center">
               <input
                 type="checkbox"
                 checked={task.completion}
                 onChange={() => handleCheckboxChange(task)}
                 className="mr-4"
               />
-              <span className={task.completion ? "line-through" : ""}>
-                {task.id} - {task.name}
+              <span
+                className={`flex-grow text-lg ${
+                  task.completion ? "line-through text-gray-500" : ""
+                }`}
+              >
+                {task.name}
               </span>
               <button
-                className="bg-white text-black ml-4 mr-4 rounded-sm p-0.5 hover:bg-red-500 hover:text-white"
+                className="bg-white text-gray-800 ml-2 rounded p-2 hover:bg-red-500 hover:text-white"
                 onClick={() => handleDeleteTask(task)}
               >
                 Delete
               </button>
               <button
-                className="bg-white text-black ml-4 mr-4 rounded-sm p-0.5 hover:bg-yellow-500 hover:text-white"
+                className="bg-white text-gray-800 ml-2 rounded p-2 hover:bg-yellow-500 hover:text-white"
                 onClick={() => handleEditTask(task)}
               >
                 Edit
