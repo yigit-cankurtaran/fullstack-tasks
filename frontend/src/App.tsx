@@ -8,7 +8,7 @@ interface Task {
 
 export default function App() {
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [darkMode, setDarkMode] = useState<boolean>(false);
+  const [darkMode, setDarkMode] = useState<boolean>(true);
 
   useEffect(() => {
     fetch("http://localhost:1239/tasks")
@@ -93,6 +93,12 @@ export default function App() {
             } p-2 mr-2 ${
               darkMode ? "bg-gray-800 text-gray-100" : "bg-white text-gray-800"
             }`}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                handleAddTask();
+                (e.target as HTMLInputElement).value = "";
+              }
+            }}
           />
           <button
             onClick={() => {

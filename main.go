@@ -43,7 +43,7 @@ func main() {
 
 	router.GET("/tasks", getTasks)
 	router.GET("/", func(c *gin.Context) {
-		c.String(http.StatusOK, "Hello World")
+		c.String(http.StatusOK, "server working properly")
 	})
 	router.GET("/tasks/:id", getTaskByID)
 	router.PUT("/tasks/:id", putTaskByID)
