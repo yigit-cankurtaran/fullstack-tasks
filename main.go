@@ -116,6 +116,33 @@ func postTasks(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func deleteTasks(w http.ResponseWriter, r *http.Request) {
+	idStr := r.URL.Path[len("/tasks/"):]
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		http.Error(w, "Invalid ID", http.StatusBadRequest)
+		log.Println("Invalid ID:", idStr)
+		return
+	}
+
+	for i, t := range tasks {
+		if t.ID == id {
+			// deleting the task from the slice
+			tasks = append(tasks[:i], tasks[i+1:]...)
+			// writing the updated tasks slice to tasks.json
+			if tasksJSON, err := json.Marshal(tasks); err == nil {
+				os.WriteFile("tasks.json", tasksJSON, os.ModePerm)
+			} else {
+				log.Println("Error marshalling tasks:", err)
+			}
+			log.Println("deleted task with ID:", id)
+			w.WriteHeader(http.StatusNoContent)
+			return
+		}
+
+	}
+}
+
 func taskByIDHandler(w http.ResponseWriter, r *http.Request) {
 	// extract the ID from the URL
 	idStr := r.URL.Path[len("/tasks/"):]
@@ -137,9 +164,10 @@ func taskByIDHandler(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 		}
-		http.Error(w, "Task not found", http.StatusNotFound)
-		log.Println("Task not found with ID:", id)
-	// Implement PUT and DELETE as needed
+	case "DELETE":
+		deleteTasks(w, r)
+		return
+	// TODO: Implement PUT
 	default:
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 	}
