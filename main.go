@@ -29,6 +29,12 @@ func main() {
 		if os.IsNotExist(err) {
 			// Create the tasks.json file if it doesn't exist
 			_, createErr := os.Create("tasks.json")
+			// add the tasks slice to the tasks.json file
+			tasksJSON, err = json.Marshal(tasks)
+			os.WriteFile("tasks.json", tasksJSON, os.ModePerm)
+			if err != nil {
+				log.Println("Error marshalling tasks:", err)
+			}
 			if createErr != nil {
 				log.Println("Error creating tasks.json:", createErr)
 			}
