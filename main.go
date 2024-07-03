@@ -26,7 +26,15 @@ func main() {
 	// reading from tasks.json
 	tasksJSON, err := os.ReadFile("tasks.json")
 	if err != nil {
-		log.Println("Error reading tasks.json:", err)
+		if os.IsNotExist(err) {
+			// Create the tasks.json file if it doesn't exist
+			_, createErr := os.Create("tasks.json")
+			if createErr != nil {
+				log.Println("Error creating tasks.json:", createErr)
+			}
+		} else {
+			log.Println("Error reading tasks.json:", err)
+		}
 	} else {
 		if err := json.Unmarshal(tasksJSON, &tasks); err != nil {
 			log.Println("Error unmarshalling tasks.json:", err)
