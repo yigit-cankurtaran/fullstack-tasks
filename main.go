@@ -4,11 +4,11 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"os"
 	"strconv"
 
-	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -35,34 +35,43 @@ func main() {
 		json.Unmarshal(tasksJSON, &tasks)
 	}
 
-	router := gin.Default()
-	// CORS
-	config := cors.DefaultConfig()
-	config.AllowOrigins = []string{"http://localhost:5173"}
-	router.Use(cors.New(config))
+	mux := http.NewServeMux()
 
-	router.GET("/tasks", getTasks)
-	router.GET("/", func(c *gin.Context) {
-		c.String(http.StatusOK, "server working properly")
+	mux.HandleFunc("/tasks", func(w http.ResponseWriter, r *http.Request) {
+		switch r.Method {
+		case "GET":
+			getTasks(w, r)
+		case "POST":
+			postTasks(w, r)
+		default:
+			w.WriteHeader(http.StatusMethodNotAllowed)
+			w.Write([]byte("Method not allowed"))
+		}
 	})
-	router.GET("/tasks/:id", getTaskByID)
-	router.PUT("/tasks/:id", putTaskByID)
-	router.POST("/tasks", postTasks)
-	router.DELETE("/tasks/:id", deleteTaskByID)
-	router.Run("localhost:1239")
+
+	mux.HandleFunc("/tasks/", taskByIDHandler)
+	http.ListenAndServe(":8080", mux)
+
 }
 
 // GET /tasks
-func getTasks(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK, tasks)
+func getTasks(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(tasks)
 }
 
 // POST /tasks
-func postTasks(c *gin.Context) {
+func postTasks(w http.ResponseWriter, r *http.Request) {
 	var newTask task
-
-	// call BindJSON to bind the received JSON to newTask
-	if err := c.BindJSON(&newTask); err != nil {
+	body, err := io.ReadAll(r.Body)
+	if err != nil {
+		http.Error(w, "error reading request body", http.StatusInternalServerError)
+		return
+	}
+	err = json.Unmarshal(body, &newTask)
+	// pointer because we want to modify the original slice
+	if err != nil {
+		http.Error(w, "error unmarshalling request body", http.StatusBadRequest)
 		return
 	}
 
@@ -70,12 +79,11 @@ func postTasks(c *gin.Context) {
 	tasks = append(tasks, newTask)
 
 	// save to file
-	tasksJSON, err := json.Marshal(tasks)
-	if err != nil {
-		fmt.Println(err)
-	}
+	tasksJSON, _ := json.Marshal(tasks)
 	os.WriteFile("tasks.json", tasksJSON, os.ModePerm)
-	c.IndentedJSON(http.StatusCreated, newTask)
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(newTask)
 }
 
 // GET /tasks/:id
